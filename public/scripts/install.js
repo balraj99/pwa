@@ -21,7 +21,7 @@ const installButton = document.getElementById('butInstall');
 let deferredInstallPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
-  console.debug('Before Install', evt);
+  console.debug('Before Install', e);
 
   // Prevent Chrome 67 and earlier from automatically showing the prompt
   e.preventDefault();
