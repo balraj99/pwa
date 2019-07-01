@@ -18,9 +18,6 @@
 'use strict';
 
 const installButton = document.getElementById('butInstall');
-installButton.addEventListener('click', installPWA);
-
-
 let deferredInstallPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
