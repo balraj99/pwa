@@ -17,47 +17,36 @@
  */
 'use strict';
 
-let deferredInstallPrompt = null;
 const installButton = document.getElementById('butInstall');
 installButton.addEventListener('click', installPWA);
 
-// CODELAB: Add event listener for beforeinstallprompt event
-window.addEventListener('beforeinstallprompt', saveBeforeInstallPromptEvent);
 
-/**
- * Event handler for beforeinstallprompt event.
- *   Saves the event & shows install button.
- *
- * @param {Event} evt
- */
-function saveBeforeInstallPromptEvent(evt) {
-  // CODELAB: Add code to save event & show the install button.
-  deferredInstallPrompt = evt;
+let deferredInstallPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
   installButton.removeAttribute('hidden');
-}
+});
 
-
-/**
- * Event handler for butInstall - Does the PWA installation.
- *
- * @param {Event} evt
- */
-function installPWA(evt) {
-  // CODELAB: Add code show install prompt & hide the install button.
+installButton.addEventListener('click', (e) => {
+  // hide our user interface that shows our A2HS button
+  installButton.style.display = 'none';
+  // Show the prompt
   deferredInstallPrompt.prompt();
-  // Hide the install button, it can't be called twice.
-  evt.srcElement.setAttribute('hidden', true);
-  // CODELAB: Log user response to prompt.
+  // Wait for the user to respond to the prompt
   deferredInstallPrompt.userChoice
-    .then((choice) => {
-      if (choice.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt', choice);
+    .then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
       } else {
-        console.log('User dismissed the A2HS prompt', choice);
+        console.log('User dismissed the A2HS prompt');
       }
       deferredInstallPrompt = null;
     });
-}
+});
 
 // CODELAB: Add event listener for appinstalled event
 window.addEventListener('appinstalled', logAppInstalled);
